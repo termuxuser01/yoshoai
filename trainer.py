@@ -32,6 +32,8 @@ def debug_pickle():
         lst = pickle.load(f)
         print(lst)
 
+def train_corpus(cb):
+    pass
 
 
 if __name__ == "__main__":
