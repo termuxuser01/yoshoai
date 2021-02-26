@@ -39,7 +39,14 @@ def corpus_trainer(cb, cpt, custom):
 
     if(bool(custom)):
         for mode in custom.split():
-            trainer.train("chatterbot.corpus.english.{}".format(mode))
+            try:
+                trainer.train("chatterbot.corpus.english.{}".format(mode))
+            except(FileNotFoundError):
+                from wasabi import Printer
+                msg = Printer()
+                msg.fail("That corpus doesn't exist!")
+                return -1
+
         print("all done training masta!")
     elif(bool(cpt)):
         trainer.train("chatterbot.corpus.english")
@@ -74,7 +81,7 @@ if __name__ == "__main__":
 
     if(bool(args.custom)):
         if(not bool(args.corpus)):
-                from errors import CorpusArgs
+                from src.errors import CorpusArgs
                 raise CorpusArgs("--corpus was not set see --help")
         else:
             corpus_trainer(cb, args.corpus, args.custom)
