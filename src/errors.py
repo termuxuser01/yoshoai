@@ -1,0 +1,2 @@
+class CorpusArgs(Exception):
+    pass
