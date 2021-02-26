@@ -32,8 +32,19 @@ def debug_pickle():
         lst = pickle.load(f)
         print(lst)
 
-def train_corpus(cb):
-    pass
+def corpus_trainer(cb, cpt, custom):
+    from chatterbot.trainers import ChatterBotCorpusTrainer
+    
+    trainer = ChatterBotCorpusTrainer(cb)
+
+    if(bool(custom)):
+        for mode in custom.split():
+            trainer.train("chatterbot.corpus.english.{}".format(mode))
+        print("all done training masta!")
+    elif(bool(cpt)):
+        trainer.train("chatterbot.corpus.english")
+        print("all done training masta!")
+
 
 
 if __name__ == "__main__":
@@ -43,6 +54,12 @@ if __name__ == "__main__":
             action="store_true")
     parser.add_argument("--dp", help="dump pickle file to see stored data",
             action="store_true")
+    
+    #corpus arguments
+    parser.add_argument("--corpus", action="store_true")
+    parser.add_argument("--custom", type=str)
+    #end corpus arguments
+
     args = parser.parse_args()
     #end handle arguments
 
@@ -52,3 +69,15 @@ if __name__ == "__main__":
 
     if(args.dp):
         debug_pickle()
+
+    #check corpus args
+
+    if(bool(args.custom)):
+        if(not bool(args.corpus)):
+                from errors import CorpusArgs
+                raise CorpusArgs("--corpus was not set see --help")
+        else:
+            corpus_trainer(cb, args.corpus, args.custom)
+    else:
+        corpus_trainer(cb, args.corpus, args.custom)
+    #end check corpus args
