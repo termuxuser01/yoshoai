@@ -1,5 +1,6 @@
 import pickle
 import argparse
+from src.checkers import checker
 from chatterbot import ChatBot
 from chatterbot.trainers import ListTrainer
 
@@ -9,15 +10,21 @@ cb = ChatBot(
         sotarge_adapter="chatterbot.storage.SQLStorageAdapter",
         )
 
+def generate_chat(cb, inpt):
+    if(not checker(inpt)[1]):
+        return cb.get_response(inpt), False
+    else:
+        response, quit = checker(inpt)
+        return response, quit
 
 def cchat(cb):
     while True:
         try:
-            response = cb.get_response(input("You:"))
+            response, quit = generate_chat(cb, input("You:"))
             print("Yosho:", response)
+            if(quit):
+                raise KeyboardInterrupt
         except(KeyboardInterrupt, EOFError, SystemExit):
-            print()
-            print("Yosho: Bye masta!")
             break
 
 if __name__ == "__main__":
@@ -25,10 +32,17 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--cchat", help="Chat from commandline",
             action="store_true")
+    parser.add_argument("--discord", help="Start the discord bot",
+            action ="store_true")
+    parser.add_argument("-v", "--verbose", help="Have verbose output",
+            action="store_true")
     args = parser.parse_args()
     #end arguments
 
     if(args.cchat):
         cchat(cb)
+    elif(args.discord):
+        from servers.discord_handler import *
+        discord_chat(client, discord_key, cb, generate_chat, args.verbose) 
 
     print("done!")
