@@ -11,8 +11,10 @@ cb = ChatBot(
         )
 
 def generate_chat(cb, inpt):
-    if(not checker(inpt)[1]):
+    if((not checker(inpt)[0]) & (not checker(inpt)[1])):
         return cb.get_response(inpt), False
+    elif((type(checker(inpt)) == str) & (not checker(inpt)[1])):
+        return checker(inpt)
     else:
         response, quit = checker(inpt)
         return response, quit
