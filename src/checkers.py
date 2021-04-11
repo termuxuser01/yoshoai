@@ -53,7 +53,7 @@ def checkFunc(input_st):
             ("turn off my computer", "shutdown my computer")
             ]
 
-    if(input_st == functions[0][0] | input_st == functions[0][1]):
+    if((input_st == functions[0][0]) | (input_st == functions[0][1])):
         ShutDown()
     else:
         return False
